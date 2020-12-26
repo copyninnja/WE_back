@@ -1,12 +1,9 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import moviesRouter from './api/movies';
-import genreRouter from  './api/genres';
-import ratingRouter from "./api/rating";
-import reviewRouter from './api/reviews';
+
 import bodyParser from 'body-parser';
 import './db';
-import {loadUsers, loadMovies,loadRatings,loadReviews} from './seedData';
+import {loadUsers} from './seedData';
 import usersRouter from './api/users';
 import session from 'express-session';
 import passport from './authenticate';
@@ -37,9 +34,7 @@ const errorNotification= (err, str, req)=> {
 
 if (process.env.SEED_DB) {
   loadUsers();
-  loadMovies();
-  loadRatings();
-  loadReviews();
+
 }
 
 const app = express();
@@ -61,7 +56,6 @@ app.use(session({
 }));
 
 
-app.use('/api/genres', genreRouter);
 
 app.listen(port, () => {
   console.info(`Server running at ${port}`);
@@ -71,9 +65,6 @@ app.use('/api/users', usersRouter);
 app.use(errHandler);
 
 // Add passport.authenticate(..)  to middleware stack for protected routes​
-app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRouter);
+// app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRouter);
 
-app.use('/api/rating', ratingRouter);
-
-app.use('/api/reviews', reviewRouter);
 
