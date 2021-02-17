@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
+var dotenv =require( 'dotenv');
+var mongoose =require( 'mongoose');
 
 dotenv.config();
 

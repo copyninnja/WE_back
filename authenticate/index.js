@@ -12,7 +12,7 @@ let jwtOptions = {};
 jwtOptions.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
 jwtOptions.secretOrKey = process.env.secret;
 const strategy = new JWTStrategy(jwtOptions, async (payload, next) => {
-  const user = await UserModel.findByUserName(payload);
+  const user = await UserModel.findByemail(payload);
   if (user) {
     next(null, user);
   } else {

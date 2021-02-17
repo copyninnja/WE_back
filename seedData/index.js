@@ -1,12 +1,17 @@
 import userModel from '../api/users/userModel';
 
 const users = [{
-    'username': 'user1',
+    'email': 'user1@qq.com',
+    'username':'daniel',
     'password': 'test1',
+    'type':'personal'
+
   },
   {
-    'username': 'user2',
+    'email': 'user2@qq.com',
     'password': 'test2',
+    'username':'danny',
+    'type':'personal'
   },
 ];
 

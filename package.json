@@ -1,10 +1,10 @@
 {
-  "name": "movies-api",
+  "name": "we_back",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node index.js",
+    "start": "nodemon --exec babel-node ./bin/www",
     "close": "xl_close_port -p 8080"
   },
   "author": "XiaoFeng Gong",
@@ -30,6 +30,14 @@
     "nodemailer": "^6.4.17",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
-    "xoauth2": "^1.2.0"
+    "xoauth2": "^1.2.0",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1",
+    "socket.io": "^3.0.4",
+    "cookie-parser": "~1.4.4",
+    "blueimp-md5": "^2.18.0"
   }
 }

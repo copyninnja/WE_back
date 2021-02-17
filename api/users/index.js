@@ -1,8 +1,12 @@
 import express from 'express';
-import User from './userModel';
+import UserModel from './userModel';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import xoauth2 from 'xoauth2';
+import MD5 from 'blueimp-md5'
+import cookie from 'express-session/session/cookie';
+const filter = { password: 0, __v: 0 } //查询时过滤出指定的属性
+
 const router = express.Router(); // eslint-disable-line
 let transporter = nodemailer.createTransport({
   host: 'smtp.163.com',
@@ -15,73 +19,81 @@ let transporter = nodemailer.createTransport({
 });
 
 // Get all users
-router.get('/', (req, res, next) => {
-  User.find().then(users => res.status(200).json(users)).catch(next);
+router.get('/', function (req, res) {
+  // 先获取userId
+  const userId = req.cookies.userId
+  if (!userId) {
+    return res.send({ code: 1, msg: '请先登录' })
+  }
+  UserModel.findOne({ _id: userId }, filter, function (err, user) {
+    if (!user) {
+      res.send({ code: 1, msg: '无用户信息' })
+    } else {
+      res.send({ code: 0, data: user })
+    }
+  })
+})
+
+//find password
+router.post('/findPassword',async(req, res, next) => {
+  if (req.body.email) {
+    
+    var mailOptions = {
+      from: '"xf gong"<daniel_gongxf@163.com>',
+      to: req.body.email, 
+      subject: ' | new message !',
+      text: "welcome world"
+    }
+    transporter.sendMail(mailOptions, function(error, response){
+      if(error){
+          console.log(error);
+      }else{
+          res.redirect('/');
+      }
+  });
+}
+});
+// Register OR authenticate a user
+router.post('/register', async (req, res, next) => {
+    // const rep = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    const { username,email, password, type } = req.body
+    UserModel.findOne({ username }, function (err, user) {
+        if (user) {
+          res.send({ code: 1, msg: 'username already exist' })
+        } else {
+          new UserModel({username, email, type, password: MD5(password) }).save(function (
+            err,
+            user
+          ) {
+            res.cookie('userId', user._id, { maxAge: 1000 * 60 * 60 * 24 })
+            var data = { username, email, type, _id: user._id.$oid }
+            res.send({
+              code: 0,
+              data
+            })
+          })
+        }
+      })
+   
+  
+  
 });
 
-// Register OR authenticate a user
-router.post('/', async (req, res, next) => {
-  // console.log(req.body)
-  if (!req.body.username || !req.body.password) {
-    res.status(401).json({
-      success: false,
-      msg: 'Please pass username and password.',
-    });
+router.post('/login', async (req, res, next) => {
+  const { username,email, password, type } = req.body
+  const user = await UserModel.findByUserName(username).catch(next);
+  if (!user) return res.status(401).json({
+    code: 401,
+    msg: 'Authentication failed. User not found.'
+  });
+  if(user.password == MD5(password)){
+    res.cookie('userId', user._id, { maxAge: 1000 * 60 * 60 * 24 })
+    res.send({ code: 0, data: user })
   }
-  if (req.query.action === 'register') {
-    const rep = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/;
-
-    if (req.body.password.match(rep)) {
-      if (req.body.mail) {
-        var mailOptions = {
-          from: '"xf gong"<daniel_gongxf@163.com>',
-          to: req.body.mail, 
-          subject: ' | new message !',
-          text: "welcome world"
-        }
-        transporter.sendMail(mailOptions, function(error, response){
-          if(error){
-              console.log(error);
-          }else{
-              res.redirect('/');
-          }
-      });
-    }
-      await User.create(req.body).catch(next);
-      res.status(201).json({
-        code: 201,
-        msg: 'Successful created new user.',
-      });
-    } else {
-      res.status(401).json({
-        success: false,
-        msg: 'BAD PASSWORD',
-      })
-    }
-  } else {
-    const user = await User.findByUserName(req.body.username).catch(next);
-    if (!user) return res.status(401).json({
-      code: 401,
-      msg: 'Authentication failed. User not found.'
-    });
-    user.comparePassword(req.body.password, (err, isMatch) => {
-      if (isMatch && !err) {
-        // if user is found and password is right create a token
-        const token = jwt.sign(user.username, process.env.secret);
-        process.env.Token = token;
-        // return the information including token as JSON
-        res.status(200).json({
-          success: true,
-          token: 'BEARER ' + token,
-        });
-      } else {
-        res.status(401).json({
-          code: 401,
-          msg: 'Authentication failed. Wrong password.'
-        });
-      }
-    });
+  else{
+    res.send({ code: 1, msg: 'wrong password' })
   }
+  
 });
 
 // Update a user
@@ -94,7 +106,16 @@ router.put('/:id', (req, res, next) => {
     })
     .then(user => res.json(200, user)).catch(next);
 });
-
+router.post('/userlist', function (req, res) {
+  const { type } = req.body
+  UserModel.find({ type }, filter, function (err, list) {
+    if (!list) {
+      res.send({ code: 1, msg: '查询用户列表失败' })
+    } else {
+    }
+    res.send({ code: 0, data: list, msg: new Date() })
+  })
+})
 
 
 export default router;

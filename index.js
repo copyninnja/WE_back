@@ -2,13 +2,17 @@ import dotenv from 'dotenv';
 import express from 'express';
 
 import bodyParser from 'body-parser';
-import './db';
-import {loadUsers} from './seedData';
-import usersRouter from './api/users';
+import './db.js';
+// import {loadUsers} from './seedData';
+import usersRouter from './api/users/index.js';
 import session from 'express-session';
-import passport from './authenticate';
+import passport from './authenticate/index.js';
 import errorhandler  from 'errorhandler';
 import notifier  from 'node-notifier';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import path from 'path';
+import chatRouter from './api/chat'
 dotenv.config();
 
 const errHandler = (err, req, res, next) => {
@@ -32,39 +36,29 @@ const errorNotification= (err, str, req)=> {
 }
 
 
-if (process.env.SEED_DB) {
-  loadUsers();
-
-}
+// if (process.env.SEED_DB) {
+//   loadUsers();
+// }
 
 const app = express();
-// initialise passport​
-app.use(passport.initialize());;
 
-const port = process.env.PORT;
-//configure body-parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+//new
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+app.use(logger('dev'));
+app.use(cookieParser());
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public'));
-// app.use('/api/movies', moviesRouter);
-//session middleware
-app.use(session({
-  secret: 'ilikecake',
-  resave: true,
-  saveUninitialized: true
-}));
-
-
-
-app.listen(port, () => {
-  console.info(`Server running at ${port}`);
-});
-//Users router
 app.use('/api/users', usersRouter);
+app.use('/api/msglist', chatRouter);
+
+
 app.use(errHandler);
 
 // Add passport.authenticate(..)  to middleware stack for protected routes​
 // app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRouter);
+module.exports = app;
 
 
