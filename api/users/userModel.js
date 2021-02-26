@@ -14,14 +14,20 @@ const UserSchema = new Schema({
   password: { type: String, required: true }, //密码
   type: { type: String, required: true }, // 机构
   header: { type: String }, //头像
-  age: { type: String }, //年龄
+  age: { type: Date }, //年龄
   gender:{type: String}, //性别
-  sport: { type: String }, //sport
+  sport: { type: Array }, //sport
   money: { type: String }, //薪资
   detail: { type: String }, //个人简介
   story: { type: String }, //故事
   purchase: { type: String }, //物品
   event: { type: String }, //活动
+  companyName:{type: String},
+  location:{type: String},
+  subscribe:{type:String},//others username
+  friend:{type:Array}//friend username
+
+
 
 
 });

@@ -1,4 +1,5 @@
-const {ChatModel} =require('../api/chat/chatModel')
+import ChatModel from '../api/chat/chatModel';
+
 module.exports = function (server) {
   //得到IO对象
 
@@ -12,11 +13,16 @@ module.exports = function (server) {
       // 处理数据（保存消息）
       // 准别chatMas对象的相关数据
       const chat_id= [from,to].sort().join('_')  //from_to或者to_from
-      const create_time=new Date()
-      new ChatModel({from,to,content,chat_id,create_time}).save(function (err,chatMsg) { 
-        // 向所有连接的客户端发消息
+      const create_time=new Date().getTime();
+      // new ChatModel({from,to,content,chat_id,create_time}).save(function (err,chatMsg) { 
+      //   // 向所有连接的客户端发消息
+      //   io.emit('receiveMsg',chatMsg)
+      //  })
+      ChatModel.create({from,to,content,chat_id,create_time},(err, chatMsg) => {
         io.emit('receiveMsg',chatMsg)
-       })
+      })
+
+
     })
   })
 }

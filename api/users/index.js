@@ -23,12 +23,15 @@ router.get('/', function (req, res) {
   // 先获取userId
   const userId = req.cookies.userId
   if (!userId) {
-    return res.send({ code: 1, msg: '请先登录' })
+    console.log("1")
+    return res.send({ code: 1, msg: 'please sign in first' })
   }
   UserModel.findOne({ _id: userId }, filter, function (err, user) {
-    if (!user) {
-      res.send({ code: 1, msg: '无用户信息' })
-    } else {
+    if (!user) {    console.log("2")
+
+      res.send({ code: 1, msg: 'no user info' })
+    } else {  
+
       res.send({ code: 0, data: user })
     }
   })
@@ -80,8 +83,8 @@ router.post('/register', async (req, res, next) => {
 });
 
 router.post('/login', async (req, res, next) => {
-  const { username,email, password, type } = req.body
-  const user = await UserModel.findByUserName(username).catch(next);
+  const { email, password } = req.body
+  const user = await UserModel.findByemail(email).catch(next);
   if (!user) return res.status(401).json({
     code: 401,
     msg: 'Authentication failed. User not found.'
@@ -116,6 +119,30 @@ router.post('/userlist', function (req, res) {
     res.send({ code: 0, data: list, msg: new Date() })
   })
 })
-
+// 更新用户信息的路由
+router.post('/update', function (req, res) {
+  // 先获取userId
+  const userId = req.cookies.userId
+  if (!userId) {
+    return res.send({ code: 1, msg: '请先登录' })
+  }
+  // userId存在，根据userId更新用户信息
+  // 得到提交的用户信息
+  const user = req.body
+  console.log('req'+user)
+  UserModel.findByIdAndUpdate({ _id: userId }, user, function (err, oldUser) {
+    console.log('old'+oldUser)
+    if (!oldUser) {
+      // 如果老的用户不存在，告诉浏览器删除cookie
+      res.clearCookie('userId')
+      res.send({ code: 1, msg: 'cookie有误' })
+    } else {
+      const { _id, type, username } = oldUser
+      const data = Object.assign(user, { _id, type, username })
+      console.log( _id, type, username )
+      res.send({ code: 0, data, msg: new Date() })
+    }
+  })
+})
 
 export default router;

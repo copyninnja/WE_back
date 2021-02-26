@@ -12,7 +12,8 @@ import notifier  from 'node-notifier';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import path from 'path';
-import chatRouter from './api/chat'
+import chatRouter from './api/chat';
+import userModel from './api/users/userModel'
 dotenv.config();
 
 const errHandler = (err, req, res, next) => {
@@ -53,6 +54,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public'));
 app.use('/api/users', usersRouter);
 app.use('/api/msglist', chatRouter);
+//  async function loadUsers() {
+//  await  userModel.deleteMany();
+//  }loadUsers();
 
 
 app.use(errHandler);
