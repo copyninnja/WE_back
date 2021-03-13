@@ -23,43 +23,19 @@ const UserSchema = new Schema({
   purchase: { type: String }, //物品
   event: { type: String }, //活动
   companyName:{type: String},
-  location:{type: String},
+  loc :  { type: {type:String}, coordinates: [Number]},
   subscribe:{type:String},//others username
-  friend:{type:Array}//friend username
-
-
-
-
+  friend:{type:Array},//friend username
+  acceptDistance:{type:Number},
+  nearby :[{type: mongoose.Schema.Types.ObjectId, ref: 'Nearby'}]
 });
-// UserSchema.pre('save', function(next) {
-//   const user = this;
-//   if (this.isModified('password') || this.isNew) {
-//       bcrypt.genSalt(10, (err, salt)=> {
-//           if (err) {
-//               return next(err);
-//           }
-//           bcrypt.hash(user.password, salt, null, (err, hash)=> {
-//               if (err) {
-//                   return next(err);
-//               }
-//               user.password = hash;
-//               next();
-//           });
-//       });
-//   } else {
-//       return next();
-//   }
-// });
-// UserSchema.methods.comparePassword = function(passw, cb) {
-//   bcrypt.compare(passw, this.password, (err, isMatch) => {
-//       if (err) {
-//           return cb(err);
-//       }
-//       cb(null, isMatch);
-//   });
-// };
+UserSchema.index({loc: '2dsphere'});
+
 UserSchema.statics.findByemail = function (email) {
   return this.findOne({ email: email });
+};
+UserSchema.statics.findByUserName = function (username) {
+  return this.findOne({ username: username });
 };
 UserSchema.statics.findPassword = function (email) {
   return this.password;

@@ -13,7 +13,9 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import path from 'path';
 import chatRouter from './api/chat';
-import userModel from './api/users/userModel'
+import userModel from './api/users/userModel';
+import UploadRouter from './api/Upload';
+import NearbyRouter from './api/nearby'
 dotenv.config();
 
 const errHandler = (err, req, res, next) => {
@@ -43,6 +45,8 @@ const errorNotification= (err, str, req)=> {
 
 const app = express();
 
+
+
 //new
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -54,6 +58,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public'));
 app.use('/api/users', usersRouter);
 app.use('/api/msglist', chatRouter);
+app.use('/api/upload',UploadRouter);
+app.use('/api/nearby',NearbyRouter);
+app.use('/public', express.static(path.join(__dirname, 'public')));
 //  async function loadUsers() {
 //  await  userModel.deleteMany();
 //  }loadUsers();

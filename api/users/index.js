@@ -27,7 +27,7 @@ router.get('/', function (req, res) {
     return res.send({ code: 1, msg: 'please sign in first' })
   }
   UserModel.findOne({ _id: userId }, filter, function (err, user) {
-    if (!user) {    console.log("2")
+    if (!user) {    
 
       res.send({ code: 1, msg: 'no user info' })
     } else {  
@@ -60,10 +60,11 @@ router.post('/findPassword',async(req, res, next) => {
 router.post('/register', async (req, res, next) => {
     // const rep = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
     const { username,email, password, type } = req.body
-    UserModel.findOne({ username }, function (err, user) {
+    UserModel.findOne({$or:[{username:username},{email:email}] }, function (err, user) {
         if (user) {
-          res.send({ code: 1, msg: 'username already exist' })
+          res.send({ code: 1, msg: 'user already exist' })
         } else {
+          
           new UserModel({username, email, type, password: MD5(password) }).save(function (
             err,
             user
@@ -85,7 +86,7 @@ router.post('/register', async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
   const { email, password } = req.body
   const user = await UserModel.findByemail(email).catch(next);
-  if (!user) return res.status(401).json({
+  if (!user) return res.send({
     code: 401,
     msg: 'Authentication failed. User not found.'
   });
