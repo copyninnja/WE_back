@@ -15,6 +15,7 @@ const NearbySchema = new Schema({
   Img:{type:Array},//配图
   loc :  { type: {type:String}, coordinates: [Number]},
   time:{type:Number},
+  locationArray:{type:Array},
   tag:{type:Array}
 });
 NearbySchema.index({loc: '2dsphere'});

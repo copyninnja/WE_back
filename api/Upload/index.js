@@ -59,5 +59,11 @@ router.post('/',  upload.single('file'), (req, res) => {
       })
     })
   })
-
+  router.get('/public/uploads/*', function (req, res) {
+    // path.resolve(__dirname, '../../')
+    let Path = path.resolve(__dirname,'../../');
+    console.log(Path)
+    res.sendFile(Path + "" + req.url );
+    console.log("Request for " + req.url + " received.");
+})
 export default router;

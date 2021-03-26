@@ -21,9 +21,10 @@ router.post('/', async  (req, res,next)=> {
           "type": user.type,
           "header": user.header,
           "content":introduction,
-          "tag":sport.values,
+          "tag":sport,
           "Img":img,
           "loc":{ type: "Point", coordinates: location},
+          "locationArray":location,
           "time": new Date().getTime()
         });
         await user.nearby.push(near._id);
@@ -36,7 +37,7 @@ router.post('/', async  (req, res,next)=> {
 
   router.post('/story', async  (req, res,next)=> {
     const { username,location} = req.body.props
-    // console.log(username,location)
+    console.log(username,location)
     try{
       const user = await User.findByUserName(username).catch(next);
         const nearby=NearbyModel.find({
@@ -58,7 +59,9 @@ router.post('/', async  (req, res,next)=> {
               content:near.content,
               Img:near.Img,
               time:near.time,
-              tag:near.tag
+              tag:near.tag,
+              header:near.header,
+              location:near.locationArray
             }
           })
           res.send({ code: 0, data: nears })

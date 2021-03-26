@@ -24,7 +24,7 @@ const UserSchema = new Schema({
   event: { type: String }, //活动
   companyName:{type: String},
   loc :  { type: {type:String}, coordinates: [Number]},
-  subscribe:{type:String},//others username
+  subscribe:{type:Array},//others username
   friend:{type:Array},//friend username
   acceptDistance:{type:Number},
   nearby :[{type: mongoose.Schema.Types.ObjectId, ref: 'Nearby'}]
