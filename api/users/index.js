@@ -228,20 +228,20 @@ router.post('/update', function (req, res) {
 
 
 // 更新用户信息的路由
-router.post('/subscription', async function (req, res) {
+router.post('/subscription', async function (req, res,next) {
   // 先获取userId
   // console.log(req.body.props)
   const from = req.body.props.from;
   const to = req.body.props.to;
-  // await UserModel.update({username: from}, {$addToSet: {subscribe: to}  })
+  const to_id =await UserModel.findByUserName(to).catch(next);
+
+  await UserModel.update({username: from}, {$addToSet: {subscribe: to}  })
   await UserModel.findOne({username:to},async function(err,result){
     if(result.subscribe.includes(from)){
   await UserModel.update({username: to}, {$addToSet: {  friend: from}})
-  await UserModel.update({username: from}, {$addToSet: {friend: to}})
   res.send({
     code: 0,
-    from:from,
-    to:to,
+    to:to_id,
     msg: "it's a Match !"
   })
 }

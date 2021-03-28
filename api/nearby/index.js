@@ -11,7 +11,7 @@ const router = express.Router(); // eslint-disable-line
 
 router.post('/', async  (req, res,next)=> {
     const { username,location,sport,introduction,img} = req.body.props
-    console.log(location)
+    // console.log(location)
     
     try{
       const user = await User.findByUserName(username).catch(next);
@@ -37,7 +37,7 @@ router.post('/', async  (req, res,next)=> {
 
   router.post('/story', async  (req, res,next)=> {
     const { username,location} = req.body.props
-    console.log(username,location)
+    // console.log(username,location)
     try{
       const user = await User.findByUserName(username).catch(next);
         const nearby=NearbyModel.find({
