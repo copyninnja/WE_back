@@ -1,20 +1,16 @@
 import dotenv from 'dotenv';
 import express from 'express';
 
-import bodyParser from 'body-parser';
 import './db.js';
 // import {loadUsers} from './seedData';
 import usersRouter from './api/users/index.js';
-import session from 'express-session';
-import passport from './authenticate/index.js';
 import errorhandler  from 'errorhandler';
 import notifier  from 'node-notifier';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import path from 'path';
 import chatRouter from './api/chat';
-import userModel from './api/users/userModel';
-import UploadRouter from './api/upload';
+import UploadRouter from './api/Upload';
 import NearbyRouter from './api/nearby'
 import ProductsRouter from './api/products'
 dotenv.config();
