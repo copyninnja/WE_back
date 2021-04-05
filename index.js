@@ -14,8 +14,9 @@ import logger from 'morgan';
 import path from 'path';
 import chatRouter from './api/chat';
 import userModel from './api/users/userModel';
-import UploadRouter from './api/Upload';
+import UploadRouter from './api/upload';
 import NearbyRouter from './api/nearby'
+import ProductsRouter from './api/products'
 dotenv.config();
 
 const errHandler = (err, req, res, next) => {
@@ -60,6 +61,9 @@ app.use('/api/users', usersRouter);
 app.use('/api/msglist', chatRouter);
 app.use('/api/upload',UploadRouter);
 app.use('/api/nearby',NearbyRouter);
+app.use('/api/products',ProductsRouter);
+
+
 app.use('/public', express.static(path.join(__dirname, 'public')));
 //  async function loadUsers() {
 //  await  userModel.deleteMany();

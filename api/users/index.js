@@ -235,10 +235,12 @@ router.post('/subscription', async function (req, res,next) {
   const to = req.body.props.to;
   const to_id =await UserModel.findByUserName(to).catch(next);
 
-  await UserModel.update({username: from}, {$addToSet: {subscribe: to}  })
+  await UserModel.update({username: from}, {$addToSet: {subscribe: to}})
   await UserModel.findOne({username:to},async function(err,result){
     if(result.subscribe.includes(from)){
-  await UserModel.update({username: to}, {$addToSet: {  friend: from}})
+  await UserModel.update({username: to}, {$addToSet: {friend: from}})
+  await UserModel.update({username: from}, {$addToSet: {friend: to}})
+
   res.send({
     code: 0,
     to:to_id,

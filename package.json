@@ -5,6 +5,22 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --exec babel-node ./bin/www",
+    "build": "npm-run-all clean compile:all",
+    "clean": "rimraf ./build && mkdir build",
+    "compile:chatmodels": "babel ./api/chat --out-dir build/api/chat",
+    "compile:usermodels": "babel ./api/users --out-dir build/api/users",
+    "compile:nearbymodels": "babel ./api/nearby --out-dir build/api/nearby",
+    "compile:uploadmodels": "babel ./api/Upload --out-dir build/api/Upload",
+    "compile:productmodels": "babel ./api/products --out-dir build/api/products",
+    "compile:models": "npm-run-all compile:chatmodels compile:usermodels compile:nearbymodels compile:uploadmodels compile:productmodels",
+    "compile:bin": "babel ./bin --out-dir build/bin",
+    "compile:app": "babel index.js --out-dir build/",
+    "compile:db": "babel db.js --out-dir build/",
+    "compile:copy": "cp -r ./node_modules/ build/node_modules && cp -r ./public build/public",
+    "compile:socketIO": "babel ./socketIO --out-dir build/socketIO",
+    "compile:all": "npm-run-all compile:models compile:bin compile:app compile:db compile:copy compile:socketIO ",
+    "postinstall": "rimraf ./build && npm run compile:all",
+    "test": "cross-env NODE_ENV=test mocha ",
     "close": "xl_close_port -p 8080"
   },
   "author": "XiaoFeng Gong",
@@ -17,6 +33,8 @@
     "nodemon": "^2.0.6"
   },
   "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.13.10",
+    "@babel/preset-env": "^7.13.12",
     "bcrypt-nodejs": "0.0.3",
     "blueimp-md5": "^2.18.0",
     "cookie-parser": "~1.4.4",
@@ -39,6 +57,18 @@
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "socket.io": "^3.0.4",
-    "xoauth2": "^1.2.0"
+    "xoauth2": "^1.2.0",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/node": "^7.6.3",
+    "@babel/register": "^7.0.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.14.0",
+    "nodemon": "^2.0.6",
+    "chai": "^4.0.2",
+    "cross-env": "^6.0.3",
+    "mocha": "^8.1.3",
+    "supertest": "^4.0.2",
+    "npm-run-all": "^4.1.5"
   }
 }

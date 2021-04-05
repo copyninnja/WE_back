@@ -5,22 +5,35 @@
  */
 
 import app  from'../index.js';
-import debug from 'debug'
-var http = require('http');
+import debug from 'debug';
 
+// var http = require('http');
+var fs = require('fs');
+
+
+var key = fs.readFileSync('private.key');
+var cert = fs.readFileSync('mydomain.crt');
+
+var options = {
+  key: key,
+  cert: cert
+};
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '8080');
+var port = process.env.PORT;
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+ var https = require('https');
+//  https.createServer(options, app).listen(8080); 
+
+var server = https.createServer(options, app);
 //startupsocketioserver
 require('../socketIO/socketIO_sever')(server)
 /**
@@ -35,21 +48,21 @@ server.on('listening', onListening);
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort(val) {
-  var port = parseInt(val, 10);
+// function normalizePort(val) {
+//   var port = parseInt(val, 10);
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
+//   if (isNaN(port)) {
+//     // named pipe
+//     return val;
+//   }
 
-  if (port >= 0) {
-    // port number
-    return port;
-  }
+//   if (port >= 0) {
+//     // port number
+//     return port;
+//   }
 
-  return false;
-}
+//   return false;
+// }
 
 /**
  * Event listener for HTTP server "error" event.
