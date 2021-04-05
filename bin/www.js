@@ -4,102 +4,72 @@
  * Module dependencies.
  */
 
-import app  from'../index.js';
-import debug from 'debug';
-
-// var http = require('http');
-var fs = require('fs');
-
-
-var key = fs.readFileSync('private.key');
-var cert = fs.readFileSync('mydomain.crt');
-
-var options = {
-  key: key,
-  cert: cert
-};
-
-/**
- * Get port from environment and store in Express.
- */
-
-var port = process.env.PORT;
-app.set('port', port);
-
-/**
- * Create HTTP server.
- */
-
- var https = require('https');
-//  https.createServer(options, app).listen(8080); 
-
-var server = https.createServer(options, app);
-//startupsocketioserver
-require('../socketIO/socketIO_sever')(server)
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-// function normalizePort(val) {
-//   var port = parseInt(val, 10);
-
-//   if (isNaN(port)) {
-//     // named pipe
-//     return val;
-//   }
-
-//   if (port >= 0) {
-//     // port number
-//     return port;
-//   }
-
-//   return false;
-// }
-
-/**
- * Event listener for HTTP server "error" event.
- */
-
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-}
+ import app  from'../index.js';
+ import debug from 'debug'
+ var http = require('http');
+ 
+ 
+ /**
+  * Get port from environment and store in Express.
+  */
+ 
+ var port = process.env.PORT
+ app.set('port', port);
+ 
+ /**
+  * Create HTTP server.
+  */
+ 
+ var server = http.createServer(app);
+ //startupsocketioserver
+ require('../socketIO/socketIO_sever')(server)
+ /**
+  * Listen on provided port, on all network interfaces.
+  */
+ 
+ server.listen(port);
+ server.on('error', onError);
+ server.on('listening', onListening);
+ 
+ 
+ 
+ /**
+  * Event listener for HTTP server "error" event.
+  */
+ 
+ function onError(error) {
+   if (error.syscall !== 'listen') {
+     throw error;
+   }
+ 
+   var bind = typeof port === 'string'
+     ? 'Pipe ' + port
+     : 'Port ' + port;
+ 
+   // handle specific listen errors with friendly messages
+   switch (error.code) {
+     case 'EACCES':
+       console.error(bind + ' requires elevated privileges');
+       process.exit(1);
+       break;
+     case 'EADDRINUSE':
+       console.error(bind + ' is already in use');
+       process.exit(1);
+       break;
+     default:
+       throw error;
+   }
+ }
+ 
+ /**
+  * Event listener for HTTP server "listening" event.
+  */
+ 
+ function onListening() {
+   var addr = server.address();
+   var bind = typeof addr === 'string'
+     ? 'pipe ' + addr
+     : 'port ' + addr.port;
+   debug('Listening on ' + bind);
+ }
+ 
