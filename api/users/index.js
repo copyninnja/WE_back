@@ -54,20 +54,25 @@ router.get('/', function (req, res) {
 //find password
 router.post('/findPassword', async (req, res, next) => {
   if (req.body.email) {
-
     var mailOptions = {
       from: '"xf gong"<daniel_gongxf@163.com>',
       to: req.body.email,
       subject: ' | new message !',
-      text: "welcome world"
+      text: "welcome to WE SPORT !"
     }
     transporter.sendMail(mailOptions, function (error, response) {
       if (error) {
         console.log(error);
       } else {
-        res.redirect('/');
+        res.status(201).json({
+          code: 201,
+          msg: 'Successful.',
+        });
       }
     });
+  }
+  else{
+    console.log(req.body)
   }
 });
 // Register OR authenticate a user
