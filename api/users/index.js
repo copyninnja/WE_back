@@ -54,11 +54,14 @@ router.get('/', function (req, res) {
 //find password
 router.post('/findPassword', async (req, res, next) => {
   if (req.body.email) {
+
+
+
     var mailOptions = {
       from: '"xf gong"<daniel_gongxf@163.com>',
       to: req.body.email,
       subject: ' | new message !',
-      text: "welcome to WE SPORT !"
+      text: "Please follow the instruction to change your password"
     }
     transporter.sendMail(mailOptions, function (error, response) {
       if (error) {
