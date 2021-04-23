@@ -12,7 +12,10 @@ import path from 'path';
 import chatRouter from './api/chat';
 import UploadRouter from './api/Upload';
 import NearbyRouter from './api/nearby'
-import ProductsRouter from './api/products'
+import ProductsRouter from './api/products';
+import morgan from 'morgan';
+import fs from 'fs';
+
 dotenv.config();
 
 const errHandler = (err, req, res, next) => {
@@ -49,6 +52,12 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(cookieParser());
+var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {
+  flags: 'a'
+});
+app.use(morgan('short', {
+  stream: accessLogStream
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
